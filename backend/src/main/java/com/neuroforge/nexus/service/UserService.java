@@ -55,7 +55,9 @@ public class UserService {
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
     Map<String, Object> status = new java.util.LinkedHashMap<>();
-    status.put("connected", user.getGithubAccessToken() != null);
+    // status.put("connected", user.getGithubAccessToken() != null);
+    status.put("connected",
+        user.getGithubAccessToken() != null && !user.getGithubAccessToken().isBlank());
     status.put("githubUsername", user.getGithubUsername());
     return status;
 }

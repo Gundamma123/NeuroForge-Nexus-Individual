@@ -4,6 +4,8 @@ import com.neuroforge.nexus.entity.User;
 import com.neuroforge.nexus.repository.UserRepository;
 import com.neuroforge.nexus.security.JwtUtil;
 import com.neuroforge.nexus.util.EncryptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import org.springframework.core.ParameterizedTypeReference;
 
 @Service
 public class GitHubOAuthService {
+
+    private static final Logger log = LoggerFactory.getLogger(GitHubOAuthService.class);
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -47,11 +51,11 @@ public class GitHubOAuthService {
             String accessToken = exchangeCodeForToken(code);
 
             if (accessToken == null || accessToken.isBlank()) {
-            System.err.println("GitHub OAuth failed: no access token returned.");
-            return frontendSettingsUrl + "?github=error";
-          }
+                log.warn("GitHub OAuth failed: no access token returned for user");
+                return frontendSettingsUrl + "?github=error";
+            }
 
-            System.out.println("GitHub OAuth: access token received.");
+            log.info("GitHub OAuth: access token received, fetching username");
 
             // Fetch the GitHub username tied to that token
             String githubUsername = fetchGithubUsername(accessToken);
@@ -66,7 +70,7 @@ public class GitHubOAuthService {
 
             return frontendSettingsUrl + "?github=connected";
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("GitHub OAuth callback failed", e);
             return frontendSettingsUrl + "?github=error";
         }
     }

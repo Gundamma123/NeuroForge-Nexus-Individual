@@ -7,6 +7,7 @@ import com.neuroforge.nexus.exception.ResourceNotFoundException;
 import com.neuroforge.nexus.repository.ProjectRepository;
 import com.neuroforge.nexus.repository.SprintRepository;
 import org.springframework.stereotype.Service;
+import com.neuroforge.nexus.repository.TaskRepository;
 
 import java.util.List;
 
@@ -15,14 +16,27 @@ public class SprintService {
 
     private final SprintRepository sprintRepository;
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
-    public SprintService(SprintRepository sprintRepository, ProjectRepository projectRepository) {
+    public SprintService(SprintRepository sprintRepository, ProjectRepository projectRepository, TaskRepository taskRepository) {
         this.sprintRepository = sprintRepository;
         this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
     }
 
-    public List<Sprint> getSprintsByProject(Long projectId) {
-    return sprintRepository.findByProjectId(projectId);
+//     public List<Sprint> getSprintsByProject(Long projectId) {
+//     return sprintRepository.findByProjectId(projectId);
+// }
+public List<Sprint> getSprintsByProject(Long projectId) {
+    List<Sprint> sprints = sprintRepository.findByProjectId(projectId);
+
+    for (Sprint sprint : sprints) {
+        sprint.setTaskCount(
+            (int) taskRepository.countBySprintId(sprint.getId())
+        );
+    }
+
+    return sprints;
 }
 
     public List<Sprint> getAllSprints() {

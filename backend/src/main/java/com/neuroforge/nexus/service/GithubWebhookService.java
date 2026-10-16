@@ -3,6 +3,8 @@ package com.neuroforge.nexus.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neuroforge.nexus.repository.TaskRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.regex.Pattern;
 
 @Service
 public class GithubWebhookService {
+
+    private static final Logger log = LoggerFactory.getLogger(GithubWebhookService.class);
 
     private final TaskRepository taskRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -82,7 +86,7 @@ public class GithubWebhookService {
             // Other event types (push, ping, etc.) are safely ignored.
         } catch (Exception e) {
             // Never let a malformed/unexpected payload crash the webhook endpoint.
-            e.printStackTrace();
+            log.error("Failed to process GitHub webhook event type={}", eventType, e);
         }
     }
 

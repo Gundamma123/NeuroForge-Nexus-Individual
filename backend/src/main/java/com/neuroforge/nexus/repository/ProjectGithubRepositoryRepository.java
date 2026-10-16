@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface ProjectGithubRepositoryRepository extends JpaRepository<ProjectGithubRepository, Long> {
     Optional<ProjectGithubRepository> findByProjectId(Long projectId);
+    // inside the interface, next to findByProjectId
+    void deleteByProjectId(Long projectId);
 }

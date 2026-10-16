@@ -70,11 +70,18 @@ public class GithubActivityController {
         List<Map<String, Object>> rows = githubApiService.getSection(
                 token, link.getRepoOwner(), link.getRepoName(), section);
 
+        // if (rows == null) {
+        //     return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+        //             .body(Map.of("message",
+        //                     "Could not load " + section + " from GitHub. The repository may be "
+        //                     + "unreachable, or the GitHub App may not have permission for this data."));
+        // }
+
         if (rows == null) {
+            String reason = githubApiService.diagnose(token, link.getRepoOwner(), link.getRepoName());
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                     .body(Map.of("message",
-                            "Could not load " + section + " from GitHub. The repository may be "
-                            + "unreachable, or the GitHub App may not have permission for this data."));
+                            reason != null ? reason : "GitHub could not return " + section + " for this repository."));
         }
 
         return ResponseEntity.ok(rows);

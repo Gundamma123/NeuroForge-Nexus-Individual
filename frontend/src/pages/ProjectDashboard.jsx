@@ -56,12 +56,20 @@ const ProjectDashboard = () => {
       <div className="nf-body">
         <Sidebar />
         <main className="nf-main">
-          <div className="nf-toolbar" style={{ marginBottom: 4 }}>
+          {/* <div className="nf-toolbar" style={{ marginBottom: 4 }}>
             <div>
               <h1 className="nf-page-title" style={{ marginBottom: 2 }}>Welcome back, {firstName}</h1>
               <div className="nf-detail-row" style={{ margin: 0 }}>Project Management Dashboard</div>
             </div>
-          </div>
+          </div> */}
+          
+<div className="nf-banner">
+  <div>
+    <h1>Welcome back, {firstName}</h1>
+    <p>Project Management Dashboard</p>
+  </div>
+</div>
+
 
           {loading && <div className="nf-loading" style={{ marginTop: 16 }}>Loading dashboard...</div>}
 

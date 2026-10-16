@@ -10,6 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+
+
+
+
+
 public interface BugRepository extends JpaRepository<Bug, Long> {
 
     // JOINs pull in the project and user names; unused filters are passed as null.
@@ -47,4 +52,7 @@ public interface BugRepository extends JpaRepository<Bug, Long> {
     @Modifying
     @Query("DELETE FROM Bug b WHERE b.project.id = :projectId")
     void deleteAllForProject(@Param("projectId") Long projectId);
+
+
+        List<Bug> findByProject_Id(Long projectId);
 }

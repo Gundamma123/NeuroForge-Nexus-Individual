@@ -7,7 +7,10 @@ import com.neuroforge.nexus.repository.TaskRepository;
 import com.neuroforge.nexus.repository.UserRepository;
 import com.neuroforge.nexus.entity.User;
 import com.neuroforge.nexus.util.EncryptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,6 +21,8 @@ import java.util.Optional;
 
 @Service
 public class GithubSyncService {
+
+    private static final Logger log = LoggerFactory.getLogger(GithubSyncService.class);
 
     private final ProjectGithubRepositoryRepository repoLinkRepository;
     private final UserRepository userRepository;
@@ -59,7 +64,7 @@ public class GithubSyncService {
             }
         } catch (Exception e) {
             // Sync is best-effort — log and move on, never propagate.
-            e.printStackTrace();
+            log.error("GitHub sync failed for task id={}", task.getId(), e);
         }
     }
 
@@ -84,8 +89,9 @@ public class GithubSyncService {
                 "body", buildIssueBody(task)
         );
 
-        ResponseEntity<Map> response = restTemplate.exchange(
-                url, HttpMethod.POST, buildRequest(body, token), Map.class);
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+            url, HttpMethod.POST, buildRequest(body, token),
+            new ParameterizedTypeReference<Map<String, Object>>() {});
 
         if (response.getBody() != null) {
             Object id = response.getBody().get("id");

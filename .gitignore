@@ -10,6 +10,9 @@ frontend/.env
 frontend/.env.local
 frontend/.env.*.local
 
+# Root-level Docker Compose secrets — never commit
+.env
+
 # =========================
 # Backend - Maven / Spring Boot
 # =========================
@@ -35,3 +38,8 @@ Thumbs.db
 # Logs
 # =========================
 *.log
+# Generated files
+node_modules/
+frontend/node_modules/
+frontend/dist/
+backend/startup-log.txt

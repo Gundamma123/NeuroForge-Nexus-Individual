@@ -1079,3 +1079,34 @@ button {
 }
 .nf-bug-step.done { color: #6ee7b7; border-color: rgba(52, 211, 153, 0.35); }
 .nf-bug-step.current { background: var(--nf-accent-grad); border-color: transparent; color: #fff; font-weight: 700; }
+
+/* ---------- Repository browser ---------- */
+.nf-browser-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; color: var(--nf-text-dim); }
+
+.nf-breadcrumb { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-size: 13px; margin-bottom: 12px; color: var(--nf-text-dim); }
+.nf-breadcrumb button { background: none; border: none; color: var(--nf-cyan-soft); cursor: pointer; font-size: 13px; font-weight: 600; padding: 0; }
+.nf-breadcrumb-part { display: inline-flex; align-items: center; gap: 4px; }
+
+.nf-browser-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--nf-card-border); font-size: 13px; }
+.nf-browser-row:last-child { border-bottom: none; }
+.nf-browser-row.clickable { cursor: pointer; }
+.nf-browser-row.clickable:hover { background: rgba(34, 211, 238, 0.05); }
+
+.nf-browser-fileinfo { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--nf-text-dim); margin-bottom: 8px; }
+
+.nf-code-view,
+.nf-readme {
+  background: var(--nf-bg-elevated);
+  border: 1px solid var(--nf-card-border);
+  border-radius: var(--nf-radius-sm);
+  padding: 14px;
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--nf-text);
+  max-height: 520px;
+  overflow: auto;
+}
+.nf-code-view { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }
+.nf-readme { white-space: pre-wrap; word-break: break-word; }
+

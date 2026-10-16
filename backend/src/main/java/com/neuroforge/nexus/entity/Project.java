@@ -1,7 +1,6 @@
 package com.neuroforge.nexus.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "projects")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Project {
 
     @Id
@@ -32,4 +30,15 @@ public class Project {
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public Project(Long id, String name, String status, Integer teamSize,
+                   String description, LocalDateTime createdAt) {
+        this();
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.teamSize = teamSize;
+        this.description = description;
+        this.createdAt = createdAt;
+    }
 }

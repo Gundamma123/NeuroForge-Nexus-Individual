@@ -4,10 +4,10 @@ services:
     container_name: neuroforge-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: neuroforge_nexus
-      MYSQL_USER: springuser
-      MYSQL_PASSWORD: springpassword
+      MYSQL_USER: ${MYSQL_USER:-springuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
@@ -25,19 +25,25 @@ services:
     ports:
       - "8081:8080"
     environment:
+      # ---- Database (must match mysqldb service above) ----
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/neuroforge_nexus?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      - SPRING_DATASOURCE_USERNAME=springuser
-      - SPRING_DATASOURCE_PASSWORD=springpassword
-      - JWT_SECRET=neuroforge-nexus-milestone1-super-secret-key-change-in-production
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER:-springuser}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      # ---- JWT ----
+      - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRATION_MS=86400000
+      # ---- CORS ----
       - APP_CORS_ALLOWED_ORIGIN=http://localhost:5173
-      - GITHUB_APP_ID=5033044
-      - GITHUB_APP_CLIENT_ID=Iv23ctpkwtpFbj9zEY8L
-      - GITHUB_APP_CLIENT_SECRET=adac245045b337d380237721ab9f9fcbd1caae9b
-      - GITHUB_APP_WEBHOOK_SECRET=e50df4a9cb231687
+      # ---- GitHub App ----
+      - GITHUB_APP_ID=${GITHUB_APP_ID}
+      - GITHUB_APP_CLIENT_ID=${GITHUB_APP_CLIENT_ID}
+      - GITHUB_APP_CLIENT_SECRET=${GITHUB_APP_CLIENT_SECRET}
+      - GITHUB_APP_WEBHOOK_SECRET=${GITHUB_APP_WEBHOOK_SECRET}
       - GITHUB_APP_REDIRECT_URI=http://localhost:8080/api/auth/github/callback
       - APP_FRONTEND_SETTINGS_URL=http://localhost:5173/profile
-      - APP_ENCRYPTION_SECRET=XXXYYYZZZ
+      # ---- Token encryption ----
+      - APP_ENCRYPTION_SECRET=${APP_ENCRYPTION_SECRET}
+      # ---- Ollama AI (safe non-secret defaults) ----
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
       - OLLAMA_MODEL=llama3.2
     depends_on:

@@ -946,6 +946,36 @@ public class GithubApiService {
         }
         return out;
     }
+     // Explains WHY GitHub refused a request for this repository, in plain language.
+    // Returns null when the repository itself is reachable.
+    public String diagnose(String token, String owner, String repo) {
+    if (!safe(owner) || !safe(repo)) {
+        return "The linked repository name is invalid. Link the repository again.";
+    }
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
+    headers.set("Accept", "application/vnd.github+json");
+    headers.set("X-GitHub-Api-Version", "2022-11-28");
+
+    try {
+        restTemplate.exchange(API + "/repos/" + owner + "/" + repo,
+                HttpMethod.GET, new HttpEntity<>(headers), JsonNode.class);
+        return null;
+    } catch (HttpClientErrorException e) {
+        int code = e.getStatusCode().value();
+        return switch (code) {
+            case 401 -> "GitHub rejected the saved login (revoked or expired). Open your Profile, disconnect and reconnect GitHub, then link the repository again.";
+            case 403 -> "GitHub denied access. If this repository belongs to an organization, an organization owner must approve this app (Organization settings, Third-party access). It could also be a temporary rate limit.";
+            case 404 -> "GitHub can't find " + owner + "/" + repo + " with the account that linked it. The repository may have been renamed, moved or deleted, or that GitHub account has no access to it. Change the repository link on the project page.";
+            default -> "GitHub returned an error (" + code + "). Try again in a moment.";
+        };
+    } catch (Exception e) {
+        return "Could not reach GitHub. Check your internet connection.";
+    }
+}
+
+
 
     // null = not visible to this account (GitHub requires admin access to list webhooks)
     public List<Map<String, Object>> getWebhooks(String token, String owner, String repo) {
